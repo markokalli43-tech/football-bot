@@ -63,10 +63,6 @@ ODDS_SPORTS = {
 }
 
 
-# ══════════════════════════════════════════════════════════════
-# ESPN — MÄNGUD JA SEIS
-# ══════════════════════════════════════════════════════════════
-
 def find_league(text):
     text_up = text.upper()
     for key, code in LEAGUES.items():
@@ -154,10 +150,6 @@ def get_standings(league_code):
         return []
 
 
-# ══════════════════════════════════════════════════════════════
-# THE ODDS API
-# ══════════════════════════════════════════════════════════════
-
 def get_odds(home, away, league_code=""):
     sport = ODDS_SPORTS.get(league_code, "soccer_epl")
     try:
@@ -206,10 +198,6 @@ def get_odds(home, away, league_code=""):
     return {}
 
 
-# ══════════════════════════════════════════════════════════════
-# NEWS API
-# ══════════════════════════════════════════════════════════════
-
 def get_team_news(team, days_back=7):
     try:
         from_date = (datetime.now() - timedelta(days=days_back)).strftime("%Y-%m-%d")
@@ -227,10 +215,6 @@ def get_team_news(team, days_back=7):
     except Exception:
         return []
 
-
-# ══════════════════════════════════════════════════════════════
-# RAPIDAPI — MEESKONNA ANDMED
-# ══════════════════════════════════════════════════════════════
 
 def get_team_stats(team_name, league_code="eng.1"):
     headers = {
@@ -264,10 +248,6 @@ def get_team_stats(team_name, league_code="eng.1"):
     except Exception:
         return {}
 
-
-# ══════════════════════════════════════════════════════════════
-# GROQ AI ENNUSTUS
-# ══════════════════════════════════════════════════════════════
 
 def predict_match_full(home, away, league_code=""):
     result = {"home": home, "away": away, "odds": {}, "home_news": [], "away_news": [], "home_stats": {}, "away_stats": {}, "prediction": ""}
@@ -346,10 +326,6 @@ def answer_football_question(question):
         return f"❌ Viga: {e}"
 
 
-# ══════════════════════════════════════════════════════════════
-# VORMISTUS
-# ══════════════════════════════════════════════════════════════
-
 def confidence_bar(pct):
     filled = int(float(pct) / 10)
     return "█" * filled + "░" * (10 - filled) + f" {pct}%"
@@ -379,10 +355,6 @@ def format_standings(standings, league_name):
     msg += "\n<i>M=Mängud V=Võidud Vi=Viigid K=Kaotused GD=Väravad Pts=Punktid</i>"
     return msg
 
-
-# ══════════════════════════════════════════════════════════════
-# TELEGRAM KÄSUD
-# ══════════════════════════════════════════════════════════════
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
@@ -453,7 +425,7 @@ async def cmd_mm(update: Update, context: ContextTypes.DEFAULT_TYPE):
             f"🔄 <b>Mäng {i}/{len(matches)}: {home} vs {away}</b>",
             parse_mode=ParseMode.HTML
         )
-        r   = predict_match_full(home, away, "fifa.world")
+        r    = predict_match_full(home, away, "fifa.world")
         odds = r.get("odds", {})
         hn   = r.get("home_news", [])
         an   = r.get("away_news", [])
@@ -660,10 +632,6 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     for chunk in [msg[i:i+4000] for i in range(0, len(msg), 4000)]:
         await update.message.reply_text(chunk, parse_mode=ParseMode.HTML)
 
-
-# ══════════════════════════════════════════════════════════════
-# KÄIVITAMINE
-# ══════════════════════════════════════════════════════════════
 
 if __name__ == "__main__":
     print("⚽ Jalgpalli ennustus bot PRO käivitub...")
